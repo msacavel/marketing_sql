@@ -1,0 +1,79 @@
+SELECT * FROM marketing.market;
+
+alter table market
+rename column AcceptedCmp1 to 1stCmpOffer;
+
+-- show all columns
+show fields from market
+
+alter table market
+drop customerNumber;
+
+-- Add customerNumber column as primarykey
+alter table market
+add  customerNumber int auto_increment primary key;
+
+-- Change name
+alter table market
+rename column customerNumber to customerId;
+
+-- Move column customerId in first place
+alter table market
+modify customerId int first;
+
+-- Give me the average money spent on different categories
+select 
+avg(MntWines) as AverageWineMoney,
+avg(MntFruits) as AverageFruitsMoney,
+avg(MntMeatProducts) as AverageMeatMoney,
+avg(MntFishProducts) as AverageFishMoney,
+avg(MntGoldProds) as AverageGoldMoney
+from market;
+
+-- Give  the total number of customers
+ select count(*) from market;
+
+-- Percentage of how many ppl accepted the 3rd campaign
+select sum(3rdCmpOffer) from market;
+
+-- Percentage of how many ppl accepted each campaign
+select 
+(sum(1stCmpOffer)/count(*))*100 as 1stOfferPercentage ,
+(sum(2ndCmpOffer)/count(*))*100 as 2ndOfferPercentage ,
+(sum(3rdCmpOffer)/count(*))*100 as 3rdOfferPercentage ,
+(sum(4thCmpOffer)/count(*))*100 as 4thOfferPercentage ,
+(sum(5thCmpOffer)/count(*))*100 as 5thOfferPercentage
+from market;
+
+-- Average money spent depending on income
+select 
+income,
+avg(MntWines) as AverageWineMoney,
+avg(MntFruits) as AverageFruitsMoney,
+avg(MntMeatProducts) as AverageMeatMoney,
+avg(MntFishProducts) as AverageFishMoney,
+avg(MntGoldProds) as AverageGoldMoney
+from market
+group by income
+order by income;
+
+-- Check how the average amount spent corresponds to recency
+select 
+recency,
+avg(MntWines + MntFruits + MntMeatProducts + MntFishProducts + MntGoldProds) as TotalAverageSpent
+from market
+group by recency
+order by recency;
+
+-- Check the average ammount spent of ppl that complain
+select 
+complain,
+avg(MntWines + MntFruits + MntMeatProducts + MntFishProducts + MntGoldProds) as TotalAverageSpent
+from market
+group by complain;
+
+SELECT 
+NumWebVisitsMonth,
+NumWebPurchases,
+(NumWebVisitsMonth/NumWebPurchases) as PurchasePerWebVisit
+from market;
